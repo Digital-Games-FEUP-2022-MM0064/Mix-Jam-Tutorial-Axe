@@ -154,6 +154,9 @@ namespace StarterAssets
             _fallTimeoutDelta = FallTimeout;
         }
 
+        public bool isPunching = false;
+        public float isPunchingTimeout = 0f;
+
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
@@ -177,6 +180,20 @@ namespace StarterAssets
 
             }
             _animator.SetBool(_animIDPunch, _input.punch);
+        }
+
+
+        private void HandlePunching()
+        {
+            RaycastHit Hit;
+            if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out Hit, Mathf.Infinity))
+            {
+                if (Hit.collider.gameObject.GetComponent<Animator>() != null && Vector3.Distance(transform.position, Hit.point) < 0.4f)
+                {
+                    isPunching = true;
+                    Hit.collider.gameObject.GetComponent<Animator>().SetBool("Punched", true);
+                }
+            }
         }
 
         private void LateUpdate()
